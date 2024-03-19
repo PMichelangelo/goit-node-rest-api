@@ -1,4 +1,4 @@
-const cntrlWrapper = cntrl => {
+export const cntrlWrapper = cntrl => {
     const func = async (req, res, next) => {
         try {
         await cntrl(req,res,next)
@@ -11,4 +11,3 @@ const cntrlWrapper = cntrl => {
 
 }
 
-export default cntrlWrapper
