@@ -13,5 +13,6 @@ export const updateContactSchema = Joi.object({
 })
     .or('name', 'email', 'phone')
     .messages({
-        'object.or': "Body must have at least one field"
+        'object.missing': "Body must have at least one field"
     });
+   
