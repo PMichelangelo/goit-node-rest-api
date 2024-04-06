@@ -6,8 +6,12 @@ import validateBody from "../helpers/validateBody.js";
 import { createContactSchema, updateContactSchema,updateStatusContactSchema } from "../schemas/contactsSchemas.js";
 
 import isValidId from "../middlewares/isValidId.js";
+import authenticate from "../middlewares/authenticate.js";
+import extractOwner from "../middlewares/extractOwner.js";
 
 const contactsRouter = express.Router();
+
+contactsRouter.use(authenticate,extractOwner)
 
 contactsRouter.get("/", contactsControllers.getAllContacts);
 
@@ -20,5 +24,7 @@ contactsRouter.post("/",validateBody(createContactSchema), contactsControllers.c
 contactsRouter.put("/:id", isValidId, validateBody(updateContactSchema), contactsControllers.updateContact);
 
 contactsRouter.patch("/:id/favorite", isValidId, validateBody(updateStatusContactSchema), contactsControllers.updateContact);
+
+contactsRouter.get("/", contactsControllers.getFavoriteContacts)
 
 export default contactsRouter;

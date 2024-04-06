@@ -17,7 +17,7 @@ const contactsSchema = new Schema({
       type: Boolean,
       default: false,
   },
-       owner: {
+    owner: {
       type: Schema.Types.ObjectId,
       ref: 'user',
     }
@@ -26,9 +26,9 @@ const contactsSchema = new Schema({
 
 contactsSchema.post("save", handleSaveError)
 
-contactsSchema.pre("findOneByUpdate", setUpdateSettings)
+contactsSchema.pre("findOneAndUpdate", setUpdateSettings)
 
-contactsSchema.post("findOneByUpdate", handleSaveError)
+contactsSchema.post("findOneAndUpdate", handleSaveError)
 
 const Contact = model("contact", contactsSchema)
 

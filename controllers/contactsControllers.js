@@ -4,15 +4,23 @@ import { cntrlWrapper } from "../decorators/cntrlWrapper.js";
 
 import HttpError from "../helpers/HttpError.js"
 
- const getAllContacts = async (req, res) => {
-        const results = await contactsService.listContacts()
-        res.json(results)
+const getAllContacts = async (req, res) => {
+        const { owner } = req.locals
+        const { page = 1, limit = 20 } = req.query
+        const skip = (page - 1) * limit
+        const results = await contactsService.listContacts({ owner }, { skip, limit })
+        const total = await contactsService.countContacts({owner})
+        res.json({
+                results,
+                total
+        })
 
 };
 
- const getOneContact = async(req, res) => {
+const getOneContact = async (req, res) => {
+        const {owner} = req.locals
         const { id } = req.params
-        const result = await contactsService.getContactById(id)
+        const result = await contactsService.getContactByFilter({owner, _id: id})
         if (!result) {
             throw HttpError(404,"Not found")
         }
@@ -21,8 +29,9 @@ import HttpError from "../helpers/HttpError.js"
 };
 
 const deleteContact = async (req, res) => {
+        const {owner} = req.locals
         const { id } = req.params
-        const result = await contactsService.removeContact(id)
+        const result = await contactsService.removeContactByFilter({owner, _id: id})
         if (!result) {
             throw HttpError(404, "Not found");
         }
@@ -31,15 +40,17 @@ const deleteContact = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
-        const result = await contactsService.addContact(req.body)
+        const {owner} = req.locals
+        const result = await contactsService.addContact({ ...req.body, owner})
         res.status(201).json(result)
 
 };
 
 
 const updateContact = async (req, res) => {
+        const {owner} = req.locals
         const {id} = req.params;
-        const result = await contactsService.updateContactById(id, req.body);
+        const result = await contactsService.updateContactByFilter({owner,_id: id}, req.body);
         if (!result) {
             throw HttpError(404, "Not found");
         }
@@ -48,10 +59,17 @@ const updateContact = async (req, res) => {
 
 }
 
+const getFavoriteContacts = async (req, res) => {
+        const favoriteContacts = await contactsService.findFavoriteByQuery({ favorite: true })
+
+        res.json({ favoriteContacts })
+}
+
 export default {
-  getAllContacts: cntrlWrapper(getAllContacts),
-  getOneContact: cntrlWrapper(getOneContact),
-  deleteContact: cntrlWrapper(deleteContact),
-  createContact: cntrlWrapper(createContact),
-  updateContact: cntrlWrapper(updateContact),
+        getAllContacts: cntrlWrapper(getAllContacts),
+        getOneContact: cntrlWrapper(getOneContact),
+        deleteContact: cntrlWrapper(deleteContact),
+        createContact: cntrlWrapper(createContact),
+        updateContact: cntrlWrapper(updateContact),
+        getFavoriteContacts:cntrlWrapper(getFavoriteContacts)
 };

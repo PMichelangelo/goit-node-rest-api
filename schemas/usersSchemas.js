@@ -1,9 +1,8 @@
 import Joi from "joi";
 
-import { emailRegxp } from "../constants/user-constants.js";
+import { emailRegxp, subscriptionList } from "../constants/user-constants.js";
 
 export const userRegisterSchema = Joi.object({
-    username: Joi.string().required(),
     email: Joi.string().pattern(emailRegxp).required(),
     password: Joi.string().min(6).required()
 })
@@ -11,4 +10,8 @@ export const userRegisterSchema = Joi.object({
 export const userLoginSchema = Joi.object({
     email: Joi.string().pattern(emailRegxp).required(),
     password: Joi.string().min(6).required()
+})
+
+export const updateSubSchema = Joi.object({
+    subscription: Joi.string().valid(...subscriptionList).required()
 })
