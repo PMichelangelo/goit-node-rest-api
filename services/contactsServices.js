@@ -12,4 +12,3 @@ export const updateContactByFilter = (filter, data) => Contact.findOneAndUpdate(
 
 export const removeContactByFilter = filter => Contact.findOneAndDelete(filter)
 
-export const findFavoriteByQuery = (filter) => Contact.find(filter)
