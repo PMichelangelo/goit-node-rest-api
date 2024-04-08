@@ -1,8 +1,14 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import mongoose from "mongoose";
+import dotenv from "dotenv"
 
+import authRouter from "./routes/authRouter.js";
 import contactsRouter from "./routes/contactsRouter.js";
+
+
+dotenv.config()
 
 const app = express();
 
@@ -10,6 +16,7 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/users", authRouter)
 app.use("/api/contacts", contactsRouter);
 
 app.use((_, res) => {
@@ -21,6 +28,15 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-app.listen(3000, () => {
-  console.log("Server is running. Use our API on port: 3000");
+
+mongoose.connect(process.env.DB_HOST)
+  .then(() => {
+    app.listen(3000, () => {
+  console.log(`Server is running. Use our API on port: ${process.env.PORT}`);
 });
+    console.log("Database connection successful")
+  })
+  .catch((error) => {
+    console.error(error.message)
+    process.exit(1)
+  })
