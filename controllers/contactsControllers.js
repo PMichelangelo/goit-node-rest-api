@@ -3,18 +3,22 @@ import * as contactsService from "../services/contactsServices.js";
 import { cntrlWrapper } from "../decorators/cntrlWrapper.js";
 
 import HttpError from "../helpers/HttpError.js"
+import { query } from "express";
 
 const getAllContacts = async (req, res) => {
-        const { owner } = req.locals
-        const { page = 1, limit = 20 } = req.query
-        const skip = (page - 1) * limit
-        const results = await contactsService.listContacts({ owner }, { skip, limit })
-        const total = await contactsService.countContacts({owner})
-        res.json({
-                results,
-                total
-        })
+    const { owner } = req.locals;
+    const { page = 1, limit = 20, favorite } = req.query;
+    const queryOptions = { owner };
 
+    if (favorite && favorite.toLowerCase() === 'true') {
+        queryOptions.favorite = true;
+    }
+
+    const skip = (page - 1) * limit;
+    const results = await contactsService.listContacts(queryOptions, { skip, limit });
+    const total = await contactsService.countContacts({ owner, ...queryOptions });
+
+    res.json({ results, total });
 };
 
 const getOneContact = async (req, res) => {
