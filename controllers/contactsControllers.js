@@ -3,7 +3,7 @@ import * as contactsService from "../services/contactsServices.js";
 import { cntrlWrapper } from "../decorators/cntrlWrapper.js";
 
 import HttpError from "../helpers/HttpError.js"
-import { query } from "express";
+
 
 const getAllContacts = async (req, res) => {
     const { owner } = req.locals;
@@ -49,7 +49,6 @@ const createContact = async (req, res) => {
         res.status(201).json(result)
 
 };
-
 
 const updateContact = async (req, res) => {
         const {owner} = req.locals

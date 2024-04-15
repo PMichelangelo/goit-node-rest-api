@@ -8,6 +8,7 @@ import { createContactSchema, updateContactSchema,updateStatusContactSchema } fr
 import isValidId from "../middlewares/isValidId.js";
 import authenticate from "../middlewares/authenticate.js";
 import extractOwner from "../middlewares/extractOwner.js";
+import upload from "../middlewares/upload.js";
 
 const contactsRouter = express.Router();
 
@@ -19,7 +20,7 @@ contactsRouter.get("/:id",isValidId, contactsControllers.getOneContact);
 
 contactsRouter.delete("/:id", isValidId, contactsControllers.deleteContact);
 
-contactsRouter.post("/",validateBody(createContactSchema), contactsControllers.createContact);
+contactsRouter.post("/", validateBody(createContactSchema), contactsControllers.createContact);
 
 contactsRouter.put("/:id", isValidId, validateBody(updateContactSchema), contactsControllers.updateContact);
 
