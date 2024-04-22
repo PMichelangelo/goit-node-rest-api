@@ -2,7 +2,7 @@ import express from "express"
 
 import authControllers from "../controllers/authControllers.js"
 
-import { userRegisterSchema, userLoginSchema, updateSubSchema } from "../schemas/usersSchemas.js"
+import { userRegisterSchema, userLoginSchema, updateSubSchema, userEmailSchema } from "../schemas/usersSchemas.js"
 
 import validateBody from "../helpers/validateBody.js"
 
@@ -12,7 +12,11 @@ import upload from "../middlewares/upload.js"
 
 const authRouter = express.Router()
 
-authRouter.post("/register", validateBody(userRegisterSchema),authControllers.register)
+authRouter.post("/register", validateBody(userRegisterSchema), authControllers.register)
+
+authRouter.get("/verify/:verificationToken", authControllers.verify)
+
+authRouter.post("/verify",validateBody(userEmailSchema), authControllers.resendVerify )
 
 authRouter.post("/login", validateBody(userLoginSchema), authControllers.login)
 
